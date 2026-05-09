@@ -28,8 +28,8 @@ jobs:
       - name: Build image for testing
         uses: docker/build-push-action@v7
         with:
-          context: ./pgbouncer
-          file: ./pgbouncer/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: false
           tags: dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}-test
           platforms: linux/amd64
@@ -62,8 +62,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: ./pgbouncer
-          file: ./pgbouncer/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: ${{ github.ref == 'refs/heads/master' }}
           tags: |
             dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}
