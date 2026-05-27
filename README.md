@@ -9,10 +9,10 @@
 </p>
 
 <p align=center>
-  <a href="https://github.com/dockette/pgbouncer/actions/workflows/docker.yml"><img src="https://github.com/dockette/pgbouncer/actions/workflows/docker.yml/badge.svg"></a>
-  <a href="https://hub.docker.com/r/dockette/pgbouncer/"><img src="https://badgen.net/docker/pulls/dockette/pgbouncer"></a>
-  <a href="https://github.com/sponsors/f3l1x"><img src="https://badgen.net/badge/sponsor/donations/F96854"></a>
-  <a href="https://github.com/orgs/dockette/discussions"><img src="https://badgen.net/badge/support/discussions/cyan"></a>
+   <a href="https://github.com/dockette/pgbouncer/actions"><img src="https://github.com/dockette/pgbouncer/actions/workflows/docker.yml/badge.svg" alt="GitHub Actions"></a>
+   <a href="https://hub.docker.com/r/dockette/pgbouncer"><img src="https://img.shields.io/docker/pulls/dockette/pgbouncer.svg" alt="Docker Hub pulls"></a>
+   <a href="https://github.com/sponsors/f3l1x"><img src="https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ea4aaa" alt="GitHub Sponsors"></a>
+   <a href="https://github.com/orgs/dockette/discussions"><img src="https://img.shields.io/badge/support-discussions-6f42c1" alt="Support/Discussions"></a>
 </p>
 
 -----
