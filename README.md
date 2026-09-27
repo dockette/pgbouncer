@@ -24,7 +24,7 @@ Mount your `pgbouncer.ini` (and optional userlist) and expose the pool port (def
 ```sh
 docker run --name some-pgbouncer -p 6432:6432 \
   -v /path/to/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro \
-  dockette/pgbouncer:1.25.1
+  dockette/pgbouncer:1.26.0
 ```
 
 Minimal `pgbouncer.ini` sketch (adjust `host`, auth, and pool names for your setup):
@@ -47,8 +47,8 @@ default_pool_size = 20
 
 | Image tag | Equivalent upstream | Docker Hub |
 |-----------|---------------------|------------|
-| `dockette/pgbouncer:1.25.1` | `dhi.io/pgbouncer:1.25.1` | [tags](https://hub.docker.com/r/dockette/pgbouncer/tags/) |
-| `dockette/pgbouncer:latest` | same as `1.25.1` (rolling) | [tags](https://hub.docker.com/r/dockette/pgbouncer/tags/) |
+| `dockette/pgbouncer:1.26.0` | `dhi.io/pgbouncer:1.26.0` | [tags](https://hub.docker.com/r/dockette/pgbouncer/tags/) |
+| `dockette/pgbouncer:latest` | same as `1.26.0` (rolling) | [tags](https://hub.docker.com/r/dockette/pgbouncer/tags/) |
 
 The image is a thin republish: builds use `FROM dhi.io/pgbouncer:${PGBOUNCER_VERSION}` so runtime behavior matches that upstream tag.
 
