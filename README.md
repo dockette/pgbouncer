@@ -19,44 +19,15 @@
 
 ## Usage
 
-Run PgBouncer on port `6432` with your own `pgbouncer.ini` from the current folder:
+Mount your own `pgbouncer.ini` and run it:
 
 ```sh
-docker run --name some-pgbouncer -p 6432:6432 \
-  -v "$(pwd)/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro" \
-  dockette/pgbouncer:1.26.0
+docker run -v ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro dockette/pgbouncer
 ```
 
-Based on `dhi.io/pgbouncer:1.26.0`, with no changes on top: the image adds no entrypoint, no default config and no
-environment variables. You configure it with a mounted `pgbouncer.ini` and, when it uses `auth_file`, a mounted
-`userlist.txt`. `linux/amd64` only.
-
-A minimal `pgbouncer.ini` looks like this. Adjust `host`, the auth settings and the pool sizes for your database:
-
-```ini
-[databases]
-* = host=postgres port=5432
-
-[pgbouncer]
-listen_addr = 0.0.0.0
-listen_port = 6432
-auth_type = md5
-auth_file = /etc/pgbouncer/userlist.txt
-pool_mode = transaction
-max_client_conn = 100
-default_pool_size = 20
-```
-
-The config above reads users from `auth_file`. Mount your userlist next to the config:
-
-```sh
-docker run --name some-pgbouncer -p 6432:6432 \
-  -v "$(pwd)/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro" \
-  -v "$(pwd)/userlist.txt:/etc/pgbouncer/userlist.txt:ro" \
-  dockette/pgbouncer:1.26.0
-```
-
-See the [PgBouncer configuration reference](https://www.pgbouncer.org/config.html) for all settings.
+The image is upstream PgBouncer with nothing added: no default config, no environment variables. Everything is
+set in `pgbouncer.ini` (plus `userlist.txt` if you use `auth_file`), see the
+[configuration reference](https://www.pgbouncer.org/config.html).
 
 ## Versions
 
