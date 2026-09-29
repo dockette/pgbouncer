@@ -70,17 +70,13 @@ them.
 
 ## Development
 
-Build the image, run the smoke test (`pgbouncer --version`) and start it on port `6432`:
-
 ```sh
-make build
-make test
-make run PGBOUNCER_CONFIG=$(pwd)/pgbouncer.ini
+make build   # build the image
+make test    # smoke test it
+make run     # run it locally
 ```
 
-`DOCKER_TAG` selects another upstream version for `make build`, `make test` and `make run`. `make run` also accepts
-`PGBOUNCER_USERLIST=$(pwd)/userlist.txt`. Both paths must be absolute, or Docker mounts an empty named volume
-instead of the file.
+Run `make` to list every target.
 
 ## Maintenance
 
