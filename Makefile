@@ -5,6 +5,8 @@ PGBOUNCER_CONFIG?=pgbouncer.ini
 PGBOUNCER_USERLIST?=
 PGBOUNCER_USERLIST_VOLUME=$(if $(PGBOUNCER_USERLIST),-v "${PGBOUNCER_USERLIST}:/etc/pgbouncer/userlist.txt:ro")
 
+VERSION:=$(shell cat VERSION)
+
 .PHONY: build
 build:
 	docker buildx build --platform ${DOCKER_PLATFORMS} \
@@ -19,3 +21,13 @@ test:
 .PHONY: run
 run:
 	docker run --rm -it --platform ${DOCKER_PLATFORMS} -p 6432:6432 -v "${PGBOUNCER_CONFIG}:/etc/pgbouncer/pgbouncer.ini:ro" ${PGBOUNCER_USERLIST_VOLUME} ${DOCKER_IMAGE}:${DOCKER_TAG}
+
+.PHONY: version
+version:
+	@echo ${VERSION}
+
+.PHONY: release
+release:
+	@date -u +%Y.%m.%d > VERSION
+	@echo "VERSION: ${VERSION} -> $$(cat VERSION)"
+	@echo "next: git commit -am \"Release: $$(cat VERSION)\" && git push"
