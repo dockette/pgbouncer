@@ -1,6 +1,9 @@
 DOCKER_IMAGE=dockette/pgbouncer
-DOCKER_TAG?=1.26.0
+DOCKER_TAG?=latest
 DOCKER_PLATFORMS?=linux/amd64
+
+include VERSION
+
 PGBOUNCER_CONFIG?=pgbouncer.ini
 PGBOUNCER_USERLIST?=
 PGBOUNCER_USERLIST_VOLUME=$(if $(PGBOUNCER_USERLIST),-v "${PGBOUNCER_USERLIST}:/etc/pgbouncer/userlist.txt:ro")
@@ -8,7 +11,7 @@ PGBOUNCER_USERLIST_VOLUME=$(if $(PGBOUNCER_USERLIST),-v "${PGBOUNCER_USERLIST}:/
 .PHONY: build
 build:
 	docker buildx build --platform ${DOCKER_PLATFORMS} \
-		--build-arg PGBOUNCER_VERSION=${DOCKER_TAG} \
+		--build-arg PGBOUNCER_VERSION=${PGBOUNCER_VERSION} \
 		-t ${DOCKER_IMAGE}:${DOCKER_TAG} \
 		.
 
@@ -19,3 +22,12 @@ test:
 .PHONY: run
 run:
 	docker run --rm -it --platform ${DOCKER_PLATFORMS} -p 6432:6432 -v "${PGBOUNCER_CONFIG}:/etc/pgbouncer/pgbouncer.ini:ro" ${PGBOUNCER_USERLIST_VOLUME} ${DOCKER_IMAGE}:${DOCKER_TAG}
+
+.PHONY: version
+version:
+	@echo ${VERSION}
+
+.PHONY: release
+release:
+	@sed -i.bak "s/^VERSION=.*/VERSION=$$(date -u +%Y.%m.%d)/" VERSION && rm VERSION.bak
+	@cat VERSION
