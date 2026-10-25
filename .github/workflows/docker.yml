@@ -11,16 +11,17 @@ on:
 permissions:
   contents: read
 
-env:
-  PGBOUNCER_VERSION: "1.26.0"
-
 jobs:
   test:
     name: "Test"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+
+      - name: Read VERSION
+        id: version
+        run: cat VERSION >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -31,16 +32,16 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}-test
+          tags: dockette/pgbouncer:latest-test
           platforms: linux/amd64
           load: true
           build-args: |
-            PGBOUNCER_VERSION=${{ env.PGBOUNCER_VERSION }}
+            PGBOUNCER_VERSION=${{ steps.version.outputs.PGBOUNCER_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Smoke test image
-        run: docker run --rm dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}-test pgbouncer --version
+        run: make test DOCKER_TAG=latest-test
 
   build:
     name: "Build"
@@ -48,35 +49,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Read VERSION
         id: version
-        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+        run: cat VERSION >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to DockerHub
+        if: github.ref == 'refs/heads/master'
         uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
 
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Dockerfile
-          push: ${{ github.ref == 'refs/heads/master' }}
-          tags: |
-            dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}
-            dockette/pgbouncer:latest
-            dockette/pgbouncer:${{ steps.version.outputs.version }}
-            dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}-${{ steps.version.outputs.version }}
           platforms: linux/amd64
+          push: ${{ github.ref == 'refs/heads/master' }}
           build-args: |
-            PGBOUNCER_VERSION=${{ env.PGBOUNCER_VERSION }}
+            PGBOUNCER_VERSION=${{ steps.version.outputs.PGBOUNCER_VERSION }}
+          tags: |
+            dockette/pgbouncer:latest
+            dockette/pgbouncer:${{ steps.version.outputs.VERSION }}
+            dockette/pgbouncer:${{ steps.version.outputs.PGBOUNCER_VERSION }}
+            dockette/pgbouncer:${{ steps.version.outputs.PGBOUNCER_VERSION }}-${{ steps.version.outputs.VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -95,8 +97,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          v="$(cat VERSION)"
-          gh release view "$v" || gh release create "$v" --title "$v (PgBouncer $PGBOUNCER_VERSION)" --generate-notes
+          . ./VERSION
+          gh release view "$VERSION" || gh release create "$VERSION" --generate-notes
 
   docs:
     name: "Docs"

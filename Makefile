@@ -1,16 +1,17 @@
 DOCKER_IMAGE=dockette/pgbouncer
-DOCKER_TAG?=1.26.0
+DOCKER_TAG?=latest
 DOCKER_PLATFORMS?=linux/amd64
+
+include VERSION
+
 PGBOUNCER_CONFIG?=pgbouncer.ini
 PGBOUNCER_USERLIST?=
 PGBOUNCER_USERLIST_VOLUME=$(if $(PGBOUNCER_USERLIST),-v "${PGBOUNCER_USERLIST}:/etc/pgbouncer/userlist.txt:ro")
 
-VERSION:=$(shell cat VERSION)
-
 .PHONY: build
 build:
 	docker buildx build --platform ${DOCKER_PLATFORMS} \
-		--build-arg PGBOUNCER_VERSION=${DOCKER_TAG} \
+		--build-arg PGBOUNCER_VERSION=${PGBOUNCER_VERSION} \
 		-t ${DOCKER_IMAGE}:${DOCKER_TAG} \
 		.
 
@@ -28,6 +29,5 @@ version:
 
 .PHONY: release
 release:
-	@date -u +%Y.%m.%d > VERSION
-	@echo "VERSION: ${VERSION} -> $$(cat VERSION)"
-	@echo "next: git commit -am \"Release: $$(cat VERSION)\" && git push"
+	@sed -i.bak "s/^VERSION=.*/VERSION=$$(date -u +%Y.%m.%d)/" VERSION && rm VERSION.bak
+	@cat VERSION
