@@ -45,15 +45,19 @@ default_pool_size = 20
 
 ## Versions
 
-| Image tag | Equivalent upstream | Docker Hub |
-|-----------|---------------------|------------|
-| `dockette/pgbouncer:1.26.0` | `dhi.io/pgbouncer:1.26.0` | [tags](https://hub.docker.com/r/dockette/pgbouncer/tags/) |
-| `dockette/pgbouncer:latest` | same as `1.26.0` (rolling) | [tags](https://hub.docker.com/r/dockette/pgbouncer/tags/) |
+`dhi.io/pgbouncer:1.26.0` is the upstream image. Tags on [Docker Hub](https://hub.docker.com/r/dockette/pgbouncer/tags/):
+
+| Tag | What it is |
+|-----|------------|
+| `dockette/pgbouncer:latest` | latest build of `master` |
+| `dockette/pgbouncer:2026.10.23` | release `2026.10.23` |
+| `dockette/pgbouncer:1.26.0` | latest build with PgBouncer `1.26.0` |
+| `dockette/pgbouncer:1.26.0-2026.10.23` | PgBouncer `1.26.0` in release `2026.10.23`; pin this one |
 
 The image is a thin republish: builds use `FROM dhi.io/pgbouncer:${PGBOUNCER_VERSION}` so runtime behavior matches that upstream tag.
 
-The release version is the date in [`VERSION`](VERSION). CI pushes `latest` also as `dockette/pgbouncer:<VERSION>`.
-To release, run `make release`, commit and push to `master`.
+The release version is the date in [`VERSION`](VERSION). The PgBouncer version is pinned in the workflow (`PGBOUNCER_VERSION`). On `master`, CI pushes the `latest` image under the four tags above.
+To release, run `make release`, commit and push to `master`. A PgBouncer upgrade is a release too.
 
 ## Maintenance
 

@@ -73,6 +73,7 @@ jobs:
             dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}
             dockette/pgbouncer:latest
             dockette/pgbouncer:${{ steps.version.outputs.version }}
+            dockette/pgbouncer:${{ env.PGBOUNCER_VERSION }}-${{ steps.version.outputs.version }}
           platforms: linux/amd64
           build-args: |
             PGBOUNCER_VERSION=${{ env.PGBOUNCER_VERSION }}
@@ -93,7 +94,9 @@ jobs:
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release view "$(cat VERSION)" || gh release create "$(cat VERSION)" --generate-notes
+        run: |
+          v="$(cat VERSION)"
+          gh release view "$v" || gh release create "$v" --title "$v (PgBouncer $PGBOUNCER_VERSION)" --generate-notes
 
   docs:
     name: "Docs"
